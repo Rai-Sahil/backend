@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  db:
+      image: postgres:15
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: authdb
+      ports:
+      - "5432:5432"
+
+  auth:
+    build:
+      context: ..
+      dockerfile: build/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DB_DSN: postgres://postgres:password@db:5432/authdb?sslmode=disable
+      JWT_SECRET: "supersecuresecret"
+    depends_on:
+      - db
